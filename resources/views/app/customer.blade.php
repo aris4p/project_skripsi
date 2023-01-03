@@ -1,0 +1,250 @@
+@extends('app.master')
+
+@section('konten')
+
+<div class="content-body">
+
+  <div class="row page-titles mx-0 mt-2">
+
+    <h3 class="col p-md-0">customer</h3>
+
+    <div class="col p-md-0">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
+        <li class="breadcrumb-item active"><a href="javascript:void(0)">Customer</a></li>
+      </ol>
+    </div>
+
+  </div>
+
+  <div class="container-fluid">
+
+    <div class="card">
+
+      <div class="card-header pt-4">
+        <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#exampleModal">
+          <i class="fa fa-plus"></i> &nbsp TAMBAH Customer
+        </button>
+        <h4>Data Customer</h4>
+
+      </div>
+      <div class="card-body pt-0">
+
+        <!-- Modal -->
+        <form action="{{ route('customer.aksi') }}" method="post">
+          <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Tambah customer</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+
+                  @csrf
+                  <div class="form-group">
+                  <label>Nama Customer</label>
+                    <input type="text" name="nama" required="required" class="form-control" placeholder="Nama Supplier ..">
+                  </div>
+                  <div class="form-group">
+                    <label>No Telepon</label>
+                    <input type="text" name="notelpon" required="required" class="form-control" placeholder="No Telepon ..">
+                  </div>
+                  <div class="form-group">
+                    <label>Email</label>
+                    <input type="text" name="email" required="required" class="form-control" placeholder="Email">
+                  </div>
+                  <div class="form-group">
+                    <label>Jenis</label>
+                    <select class="form-control" required="required" name="jenis">
+                      <option value="">Pilih</option>
+                      <option value="Reguler">Reguler</option>
+                      <option value="Visitor">Visitor</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>alamat</label>
+                    <input type="text" name="alamat" required="required" class="form-control" placeholder="alamat">
+                  </div>
+                  <div class="form-group">
+                    <label>Kota</label>
+                    <input type="text" name="kota" required="required" class="form-control" placeholder="Kota">
+                  </div>
+               <div class="form-group">
+                    <label>Status</label>
+                    <select class="form-control" required="required" name="status">
+                      <option value="">Pilih</option>
+                      <option value="Aktif">Aktif</option>
+                      <option value="Tidak Aktif">Tidak Aktif</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal"><i class="ti-close m-r-5 f-s-12"></i> Tutup</button>
+                  <button type="submit" class="btn btn-primary"><i class="fa fa-paper-plane m-r-5"></i> Simpan</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+
+
+        <div class="table-responsive">
+
+
+          <table class="table table-bordered" id="table-datatable">
+            <thead>
+              <tr>
+                <th width="1%">NO</th>
+                <th>Nama customer</th>
+                <th>No telepon</th>
+                <th>Email</th>
+                <th>Jenis</th>
+                <th>alamat</th>
+                <th>Kota</th>
+                <th>Status</th>
+
+                <th class="text-center" width="10%">OPSI</th>
+              </tr>
+            </thead>
+            <tbody>
+              @php
+              $no = 1;
+              @endphp
+              @foreach($customer as $c)
+              <tr>
+                <td class="text-center">{{ $no++ }}</td>
+                <td>{{ $c->nama }}</td>
+                <td>{{ $c->no_telepon }}</td>
+                <td>{{ $c->Email }}</td>
+                <td>{{ $c->jenis }}</td>
+                <td>{{ $c->alamat }}</td>
+                <td>{{ $c->kota }}</td>
+                <td>{{ $c->status }}</td>
+                <td>    
+
+                  @if($c->id != 0)
+                  <div class="text-center">
+                    <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#edit_customer_{{ $c->id }}">
+                      <i class="fa fa-cog"></i>
+                    </button>
+
+                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#hapus_customer_{{ $c->id }}">
+                      <i class="fa fa-trash"></i>
+                    </button>
+                  </div>
+                  @endif
+
+                  <form action="{{ route('customer.update',['id' => $c->id]) }}" method="post">
+                    <div class="modal fade" id="edit_customer_{{$c->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Edit Kategori</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+
+                            @csrf
+                            {{ method_field('PUT') }}
+
+                            <div class="form-group" style="width:100%">
+                              <label>Nama customer</label>
+                              <input type="hidden" name="id" value="{{ $c->id }}">
+                              <input type="text" name="nama" required="required" class="form-control" value="{{ $c->nama }}" style="width:100%">
+                            </div>
+                            <div class="form-group" style="width:100%">
+                              <label>No telepon</label>
+                              <input type="text" name="notelpon" required="required" class="form-control"  value="{{ $c->no_telepon }}" style="width:100%">
+                            </div>
+                            <div class="form-group" style="width:100%">
+                              <label>Email</label>
+                              <input type="text" name="email" required="required" class="form-control"  value="{{ $c->Email }}" style="width:100%">
+                            </div>
+                            <div class="form-group" style="width: 100%;margin-bottom:20px">
+                              <label>Jenis</label>
+                              <select class="form-control py-0" required="required" name="jenis" style="width: 100%">
+                                <option value="">Pilih</option>
+                                <option {{ ($c->jenis == "Reguler" ? "selected='selected'" : "") }} value="Reguler">Reguler</option>
+                                <option {{ ($c->jenis == "Visitor" ? "selected='selected'" : "") }} value="Visitor">Visitor</option>
+                              </select>
+                            </div>
+                            <div class="form-group" style="width:100%">
+                              <label>alamat</label>
+                              <input type="text" name="alamat" required="required" class="form-control"  value="{{ $c->alamat }}" style="width:100%">
+                            </div>
+                            <div class="form-group" style="width:100%">
+                              <label>Kota</label>
+                              <input type="text" name="kota" required="required" class="form-control"  value="{{ $c->kota }}" style="width:100%">
+                            </div>
+                            <div class="form-group" style="width: 100%;margin-bottom:20px">
+                              <label>Jenis</label>
+                              <select class="form-control py-0" required="required" name="status" style="width: 100%">
+                                <option value="">Pilih</option>
+                                <option {{ ($c->status == "Aktif" ? "selected='selected'" : "") }} value="Aktif">Aktif</option>
+                                <option {{ ($c->status == "Tidak Aktif" ? "selected='selected'" : "") }} value="Tidak Aktif">Tidak Aktif</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="ti-close m-r-5 f-s-12"></i> Tutup</button>
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-paper-plane m-r-5"></i> Simpan</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+
+                  <!-- modal hapus -->
+                  <form method="POST" action="{{ route('customer.delete',['id' => $c->id]) }}">
+                    <div class="modal fade" id="hapus_customer_{{$c->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Peringatan!</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+
+                            <p>Yakin ingin menghapus data ini ?</p>
+
+                            @csrf
+                            {{ method_field('DELETE') }}
+
+
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal"><i class="ti-close m-r-5 f-s-12"></i> Batal</button>
+                            <button type="submit" class="btn btn-primary"><i class="fa fa-paper-plane m-r-5"></i> Ya, Hapus</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+
+
+                </td>
+              </tr>
+              @endforeach
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+
+
+
+
+  </div>
+  <!-- #/ container -->
+</div>
+
+@endsection
